@@ -8,9 +8,11 @@ my $downsample_target=$ARGV[1];
 
 my $file = `basename $in_file`;
 
+chomp $file;
+
 my $genome_size=3300000000;
 my $flagstat_file = $in_file;
-my $flagstat_file =~ s/\.bam$/.flagstat/;
+$flagstat_file =~ s/\.bam$/.flagstat/;
 my $reads=`cat ${flagstat_file} | tr '\n' '\t' | sed -n 's/.*\\t\\([0-9]*\\) + [0-9]* paired in sequencing\\t.*/\\1/p'`;
 my $down_percent=($downsample_target*$genome_size) / ($reads * 151);
 my $ref = '/lustre/scratch113/resources/ref/Homo_sapiens/1000Genomes_hs37d5/hs37d5.fa';
