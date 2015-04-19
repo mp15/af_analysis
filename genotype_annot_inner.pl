@@ -29,3 +29,9 @@ if ( ! -e "$annotated" ) {
 	my $cmd = "bcftools annotate -o $annotated -O z -a $onekgvcf -c 'INFO/EUR_AF' $output";
 	system($cmd);
 }
+
+#extract standard AF stuff
+if ( ! -e "${annotated}.bstats" ) {
+	my $cmd = "bcftools stats -s -F ${ref} ${annotated} > ${annotated}.bstats";
+	system($cmd);
+}
