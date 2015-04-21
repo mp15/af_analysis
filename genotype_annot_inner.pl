@@ -15,13 +15,13 @@ my $annotated = "${downsample_target}x_annot.vcf.gz";
 my $files_to_gt = "${downsample_target}.list";
 #create working list
 if ( ! -e "$files_to_gt" ) {
-	system("sed 's/\\.bam/.vcf.gz' $manifest > $files_to_gt") or die "sed failed");
+	system("sed -n '".'s/.*\/\([0-9_]*\.bam\)$/\1_'.${downsample_target}.'x.vcf.gz/p'."' $manifest > $files_to_gt") == 0 or die "sed failed";
 }
 
 #genotype
 if ( ! -e "${output}.tbi" ) {
-	my $cmd = "/software/jre1.7.0_25/bin/java -Xmx3200m -jar $HOME/src/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T GenotypeGVCFs -R $ref -V $files_to_gt -o $output -L $region --dbsnp $dbsnp $chr";
-	system($cmd) or die "genotyping failed";
+	my $cmd = "/software/jre1.7.0_25/bin/java -Xmx3200m -jar \$HOME/src/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T GenotypeGVCFs -R $ref -V $files_to_gt -o $output $chr --dbsnp $dbsnp $chr";
+	system($cmd) == 0 or die "genotyping failed";
 }
 
 #annot 1000g AF
