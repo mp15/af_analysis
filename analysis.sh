@@ -22,5 +22,5 @@ temp2=`mktemp af_2XXXX`;
 grep '^AF' ${input_1}.bstats > $temp1
 grep '^AF' ${input_2}.bstats > $temp2
 
-/software/R-3.0.0/bin/Rscript analysis_bstat.R $temp1 $temp2 bstat.png
+/software/R-3.0.0/bin/Rscript analysis_bstat.R $temp1 $temp2 in1kg_snp.png in1kg_indel.png
 rm $temp1 $temp2
