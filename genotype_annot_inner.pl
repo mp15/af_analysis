@@ -11,6 +11,7 @@ my $onekgvcf = '/lustre/scratch113/resources/1000g/release/20130502/ALL.autosome
 my $chr='-L 6';
 my $output = "${downsample_target}x.vcf.gz";
 my $annotated = "${downsample_target}x_annot.vcf.gz";
+my $isec = "${downsample_target}x_isec.vcf.gz";
 
 my $files_to_gt = "${downsample_target}.list";
 #create working list
@@ -20,18 +21,24 @@ if ( ! -e "$files_to_gt" ) {
 
 #genotype
 if ( ! -e "${output}.tbi" ) {
-	my $cmd = "/software/jre1.7.0_25/bin/java -Xmx3200m -jar \$HOME/src/GenomeAnalysisTK-3.2-2/GenomeAnalysisTK.jar -T GenotypeGVCFs -R $ref -V $files_to_gt -o $output $chr --dbsnp $dbsnp $chr";
+	my $cmd = "/software/jre1.7.0_25/bin/java -Xmx140g -jar \$HOME/src/GenomeAnalysisTK-3.3-0/GenomeAnalysisTK.jar -T GenotypeGVCFs -nt 32 -R $ref -V $files_to_gt -o $output $chr --dbsnp $dbsnp $chr";
 	system($cmd) == 0 or die "genotyping failed";
 }
 
 #annot 1000g AF
 if ( ! -e "$annotated" ) {
-	my $cmd = "bcftools annotate -o $annotated -O z -a $onekgvcf -c 'INFO/EUR_AF' $output";
-	system($cmd);
+	my $cmd = "bcftools annotate -O z -o $annotated -a $onekgvcf -c 'INFO/EUR_AF' $output; tabix $annotated";
+	system($cmd) == 0 or die "annot failed";
+}
+
+#remove 
+if ( ! -e "$isec" ) {
+	my $cmd = "bcftools isec -O z -n=2 -w1 -o $isec $annotated $onekgvcf";
+	system($cmd) == 0 or die "isec failed";
 }
 
 #extract standard AF stuff
-if ( ! -e "${annotated}.bstats" ) {
-	my $cmd = "bcftools stats -s - -F ${ref} ${annotated} > ${annotated}.bstats";
-	system($cmd);
+if ( ! -e "${isec}.bstats" ) {
+	my $cmd = "bcftools stats -s - -F ${ref} ${isec} > ${isec}.bstats";
+	system($cmd) == 0 or die "stats failed";
 }

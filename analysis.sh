@@ -20,7 +20,7 @@ temp1=`mktemp af_1XXXX`;
 temp2=`mktemp af_2XXXX`;
 
 grep '^AF' ${input_1}.bstats > $temp1
-grep '^AF' ${input_1}.bstats > $temp2
+grep '^AF' ${input_2}.bstats > $temp2
 
 /software/R-3.0.0/bin/Rscript analysis_bstat.R $temp1 $temp2 bstat.png
 rm $temp1 $temp2
