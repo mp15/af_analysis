@@ -32,6 +32,6 @@ if ( ! -e "$annotated" ) {
 
 #extract standard AF stuff
 if ( ! -e "${annotated}.bstats" ) {
-	my $cmd = "bcftools stats -s -F ${ref} ${annotated} > ${annotated}.bstats";
+	my $cmd = "bcftools stats -s - -F ${ref} ${annotated} > ${annotated}.bstats";
 	system($cmd);
 }

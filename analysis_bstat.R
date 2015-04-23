@@ -11,5 +11,5 @@ fifteen$coverage <- '15x';
 covdata <-rbind(fifteen, thirty);
 
 palette <- c("#0072B2", "#D55E00");
-hist_plot <- ggplot(data=covdata, aes(x=allelefreq, y=snps, fill=coverage)) + geom_line() + scale_fill_manual(values=palette);
+hist_plot <- ggplot(data=covdata, aes(x=allelefreq, y=snps, colour=coverage)) + geom_line() + scale_fill_manual(values=palette);
 ggsave(filename=options[3],plot=hist_plot);
