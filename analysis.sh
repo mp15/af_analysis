@@ -24,3 +24,14 @@ grep '^AF' ${input_2}.bstats > $temp2
 
 /software/R-3.0.0/bin/Rscript analysis_bstat.R $temp1 $temp2 in1kg_snp.png in1kg_indel.png
 rm $temp1 $temp2
+
+temp3=`mktemp psc_1XXXX`;
+temp4=`mktemp psc_2XXXX`;
+
+grep '^PSC' ${input_1}.bstats > $temp3
+grep '^PSC' ${input_2}.bstats > $temp4
+
+/software/R-3.0.0/bin/Rscript analysis_psc.R $temp3 $temp4 output.txt
+rm $temp3 $temp4
+
+
