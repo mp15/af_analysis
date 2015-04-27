@@ -10,36 +10,23 @@ fifteen <- read.table(options[2], header=F, col.names=c(rep('',2),'sample','nRef
 
 #covdata <-rbind(fifteen, thirty);
 
+printf <- function(...) invisible(cat(sprintf(...)));
+
 sink(options[3]);
-cat("Results filtered to 1000 Genomes sites only\n");
-cat("Singletons\n");
-summary(thirty$nSingletons);
+cat("field\t30x mean\t15x mean\tmean diff\tpercent mean diff\tp value\n");
 t_sing <- t.test(fifteen$nSingletons,thirty$nSingletons, paired=T);
-t_sing;
-cat("Percentage of ");
-t_sing$estimate/mean(thirty$nSingletons);
-cat("Nonref Homs\n");
-summary(thirty$nNonRefHom);
+printf("Singletons\t%f\t%f\t%f\t%f\t%f\n",mean(thirty$nSingletons),mean(fifteen$nSingletons),
+ t_sing$estimate,t_sing$estimate/mean(thirty$nSingletons),t_sing$p.value);
 t_nrh <-t.test(fifteen$nNonRefHom,thirty$nNonRefHom, paired=T);
-t_nrh;
-cat("Percentage of ");
-t_nrh$estimate/mean(thirty$nNonRefHom);
-cat("Hets\n");
-summary(thirty$nHets);
+printf("Nonref Homs\t%f\t%f\t%f\t%f\t%f\n",mean(thirty$nNonRefHom),mean(fifteen$nNonRefHom),
+t_nrh$estimate,t_nrh$estimate/mean(thirty$nNonRefHom),t_nrh$p.value);
 t_het <- t.test(fifteen$nHets,thirty$nHets, paired=T);
-t_het;
-cat("Percentage of ");
-t_het$estimate/mean(thirty$nHets);
-cat("Ref Homs\n");
-summary(thirty$nRefHom);
+printf("Hets\t%f\t%f\t%f\t%f\t%f\n",mean(thirty$nHets),mean(fifteen$nHets),
+t_het$estimate,t_het$estimate/mean(thirty$nHets),t_het$p.value);
 t_hom <-t.test(fifteen$nRefHom,thirty$nRefHom, paired=T);
-t_hom;
-cat("Percentage of ");
-t_hom$estimate/mean(thirty$nRefHom);
-cat("INDELs\n");
-summary(thirty$indel);
+printf("Ref Homs\t%f\t%f\t%f\t%f\t%f\n",mean(thirty$nRefHom),mean(fifteen$nRefHom),
+t_hom$estimate,t_hom$estimate/mean(thirty$nRefHom),t_hom$p.value);
 t_indel <- t.test(fifteen$indel,thirty$indel, paired=T);
-t_indel;
-cat("Percentage of ");
-t_indel$estimate/mean(thirty$indel);
+printf("INDELs\t%f\t%f\t%f\t%f\t%f\n",mean(thirty$indel),mean(fifteen$indel),
+t_indel$estimate,t_indel$estimate/mean(thirty$indel),t_indel$p.value);
 sink();

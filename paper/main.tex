@@ -1,0 +1,84 @@
+\documentclass{article}
+
+\usepackage{pgfplotstable}
+
+\title{HiSeq X 30x vs 15x Comparison}
+\author{Martin O. Pollard}
+
+
+\begin{document}
+  \pagenumbering{gobble}
+  \maketitle
+  \newpage
+  \pagenumbering{arabic}
+  \tableofcontents
+  \newpage
+  \section{Abstract}
+
+  \section{Introduction}
+
+  The cost of sequencing has decreased substanially in recent years, dropping to
+  below \$1000 per sample if you exclude informatics and analysis costs. However
+  the cost remains non-negliable and thus care must be taken in sample
+  selection and choice of sequencing parameters such as intended coverage, in
+  order to ensure the maximum amount of science is possible from what has been
+  chosen.
+
+  \section{Methods}
+  100 samples from the general greek population were sequenced on the Illumina
+  HiSeq X with an intended depth of 30x. The samples were aligned using BWA MEM
+  0.7.8 to the 1000 Genomes hs37d5 reference; duplicates were then marked using
+  biobambam and the files were stored in the sequencing IRODS.  These files were
+  downloaded and downsampled to both 30x and 15x based on a genome size of 3.3 *
+  10\^9 using samtools view. From this the downsampled BAMs where fed to GATK
+  HaplotypeCaller 3.3 and per sample GVCF files were created for chromosome 6
+  only. Lastly the GVCF files were combined and genotyped across all 100 samples
+  using GATK GenotypeGVCFs to create two VCF files, one for the 15x data and one
+  for the 30x data. As part of this process the VCF file's ID column is filled
+  with IDs derived from DBSNP version 141.
+
+  To provide us with additional information about the variants discovered the
+  VCF was annotated with 1000 Genomes Phase 3 European Allele Frequency.  Lastly
+  in order to restrict variants sites to those that are highly likely to be
+  real we filtered the sites in the VCF to those present in 1000 Genomes Phase
+  3.
+
+  \section{Results}
+  After marking of reads with cycle INDEL bubbles several of the samples
+  coverage fell below 30x. We ignored this and treated these samples as if they
+  were 30x.
+  \begin{table}[!h]
+    \begin{center}
+      \label{psc_table}
+      \caption{Per sample paired comparisons}
+      \pgfplotstabletypeset[
+         col sep=tab,
+         header=true,
+         columns={field,30x mean,15x mean,mean diff,percent mean diff,p value},
+		 columns/field/.style={column name=Variant type, string type},
+         columns/30x mean/.style={fixed,precision=2},
+         columns/15x mean/.style={fixed,precision=2},
+         columns/mean diff/.style={fixed,precision=2},
+         columns/percent mean diff/.style={fixed,precision=3},
+		 columns/p value/.style={fixed,precision=3},
+	  ]{data/analysis.tsv}
+	\end{center}
+  \end{table}
+
+  \section{Acknowledgements}
+  The GATK3 program was made available through the generosity of Medical and
+  Population Genetics program at the Broad Institute, Inc.
+
+  \newpage
+  \section{Appendix A - Sample Characteristics}
+  \begin{table}[!h]
+    \begin{center}
+      \label{sample_table}
+      \caption{Sample characteristics}
+      \pgfplotstabletypeset[
+        col sep=tab,
+      ]{data/samples.tsv}
+    \end{center}
+  \end{table}
+
+\end{document}
