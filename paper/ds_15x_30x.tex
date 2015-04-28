@@ -35,7 +35,7 @@
   0.7.8 to the 1000 Genomes hs37d5 reference; duplicates were then marked using
   biobambam and the files were stored in the sequencing IRODS.  These files were
   downloaded and downsampled to both 30x and 15x based on a genome size of 3.3 *
-  10\^9 using samtools view. From this the downsampled BAMs where fed to GATK
+  $10^{9}$ using samtools view. From this the downsampled BAMs where fed to GATK
   HaplotypeCaller 3.3 and per sample GVCF files were created for chromosome 6
   only. Lastly the GVCF files were combined and genotyped across all 100 samples
   using GATK GenotypeGVCFs to create two VCF files, one for the 15x data and one
@@ -52,10 +52,10 @@
   After marking of reads with cycle INDEL bubbles several of the samples
   coverage fell below 30x. We ignored this and treated these samples as if they
   were 30x.
-  \begin{table}[!h]
+  \begin{table}[h]
     \begin{center}
       \label{psc_table}
-      \caption{Per sample paired comparisons for chr6 1KG sites only}
+      \caption{Per sample paired comparisons for chr 6 1KG sites only}
       \pgfplotstabletypeset[
          col sep=tab,
          header=true,
@@ -70,10 +70,10 @@
     \end{center}
   \end{table}
 
-  \begin{table}[!h]
+  \begin{table}[h]
     \begin{center}
       \label{psc_table}
-      \caption{Unfiltered per sample paired comparisons}
+      \caption{Unfiltered per sample paired comparisons for chr 6}
       \pgfplotstabletypeset[
          col sep=tab,
          header=true,
@@ -103,24 +103,25 @@
 
   \newpage
   \section{Appendix A - Sample/Lane Characteristics}
+  Coverage calculated based on a genome size of 3.3 * $10^{9}$
   \begin{center}
     \pgfplotstabletypeset[
       begin table=\begin{longtable},
       end table=\end{longtable},
       col sep=tab,
       header=true,
-      columns={lane,total reads,pass reads,fail reads},
+      columns={lane,total reads,pass reads,fail reads,total cov, pass cov},
       columns/lane/.style={column name=Lane, string type, column type=l},
     ]{data/lane_stats.tsv}
   \end{center}
 
   \newpage
   \section{Appendix B - Raw data stats}
-  \begin{figure}
+  \begin{figure}[h]
     \caption{Chr 6 SNPs by allele frequency}
     \includegraphics[width=\textwidth]{data/all_snp}
   \end{figure}
-  \begin{figure}
+  \begin{figure}[h]
     \caption{Chr 6 INDELs by allele frequency}
     \includegraphics[width=\textwidth]{data/all_indel}
   \end{figure}
