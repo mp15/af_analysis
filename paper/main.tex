@@ -1,6 +1,10 @@
 \documentclass{article}
 
 \usepackage{pgfplotstable}
+\usepackage{graphicx}
+
+
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
 
 \title{HiSeq X 30x vs 15x Comparison}
 \author{Martin O. Pollard}
@@ -38,10 +42,10 @@
   with IDs derived from DBSNP version 141.
 
   To provide us with additional information about the variants discovered the
-  VCF was annotated with 1000 Genomes Phase 3 European Allele Frequency.  Lastly
-  in order to restrict variants sites to those that are highly likely to be
-  real we filtered the sites in the VCF to those present in 1000 Genomes Phase
-  3.
+  VCF we used bcftools annotate to add the 1000 Genomes Phase 3 European Allele
+  Frequency information to each site.  Lastly in order to restrict variants
+  sites to those that are highly likely to be real we filtered the sites in the
+  VCF to those present in 1000 Genomes Phase 3 by using bcftools isec.
 
   \section{Results}
   After marking of reads with cycle INDEL bubbles several of the samples
@@ -55,29 +59,41 @@
          col sep=tab,
          header=true,
          columns={field,30x mean,15x mean,mean diff,percent mean diff,p value},
-		 columns/field/.style={column name=Variant type, string type},
-         columns/30x mean/.style={fixed,precision=2},
-         columns/15x mean/.style={fixed,precision=2},
-         columns/mean diff/.style={fixed,precision=2},
-         columns/percent mean diff/.style={fixed,precision=3},
-		 columns/p value/.style={fixed,precision=3},
-	  ]{data/analysis.tsv}
-	\end{center}
+         columns/field/.style={column name=Variant type, string type, column type=l},
+         columns/30x mean/.style={fixed,precision=2, column type=r},
+         columns/15x mean/.style={fixed,precision=2, column type=r},
+         columns/mean diff/.style={fixed,precision=2, column type=r},
+         columns/percent mean diff/.style={fixed,precision=3, column type=r},
+         columns/p value/.style={sci,precision=3, column type=r},
+       ]{data/analysis.tsv}
+    \end{center}
   \end{table}
+
+  \begin{figure}
+    \caption{SNPs in 1KGP3 by allele frequency}
+    \includegraphics[width=\textwidth]{data/in1kg_snp}
+  \end{figure}
+  \begin{figure}
+    \caption{INDELs in 1KGP3 by allele frequency}
+    \includegraphics[width=\textwidth]{data/in1kg_indel}
+  \end{figure}
 
   \section{Acknowledgements}
   The GATK3 program was made available through the generosity of Medical and
   Population Genetics program at the Broad Institute, Inc.
 
   \newpage
-  \section{Appendix A - Sample Characteristics}
+  \section{Appendix A - Sample/Lane Characteristics}
   \begin{table}[!h]
     \begin{center}
       \label{sample_table}
-      \caption{Sample characteristics}
+      \caption{Sample characteristics (each lane contains one sample)}
       \pgfplotstabletypeset[
         col sep=tab,
-      ]{data/samples.tsv}
+        header=true,
+        columns={lane,total reads,pass reads,fail reads},
+        columns/lane/.style={column name=Lane, string type, column type=l},
+      ]{data/lanestats.tsv}
     \end{center}
   \end{table}
 
