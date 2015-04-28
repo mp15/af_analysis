@@ -15,18 +15,18 @@ printf <- function(...) invisible(cat(sprintf(...)));
 sink(options[3]);
 cat("field\t30x mean\t15x mean\tmean diff\tpercent mean diff\tp value\n");
 t_sing <- t.test(fifteen$nSingletons,thirty$nSingletons, paired=T);
-printf("Singletons\t%f\t%f\t%f\t%f\t%f\n",mean(thirty$nSingletons),mean(fifteen$nSingletons),
- t_sing$estimate,t_sing$estimate/mean(thirty$nSingletons),t_sing$p.value);
+printf("Singletons\t%f\t%f\t%f\t%f\t%e\n",mean(thirty$nSingletons),mean(fifteen$nSingletons),
+ t_sing$estimate,t_sing$estimate*100/mean(thirty$nSingletons),t_sing$p.value);
 t_nrh <-t.test(fifteen$nNonRefHom,thirty$nNonRefHom, paired=T);
-printf("Nonref Homs\t%f\t%f\t%f\t%f\t%f\n",mean(thirty$nNonRefHom),mean(fifteen$nNonRefHom),
-t_nrh$estimate,t_nrh$estimate/mean(thirty$nNonRefHom),t_nrh$p.value);
+printf("Nonref Homs\t%f\t%f\t%f\t%f\t%e\n",mean(thirty$nNonRefHom),mean(fifteen$nNonRefHom),
+t_nrh$estimate,t_nrh$estimate*100/mean(thirty$nNonRefHom),t_nrh$p.value);
 t_het <- t.test(fifteen$nHets,thirty$nHets, paired=T);
-printf("Hets\t%f\t%f\t%f\t%f\t%f\n",mean(thirty$nHets),mean(fifteen$nHets),
-t_het$estimate,t_het$estimate/mean(thirty$nHets),t_het$p.value);
+printf("Hets\t%f\t%f\t%f\t%f\t%e\n",mean(thirty$nHets),mean(fifteen$nHets),
+t_het$estimate,t_het$estimate*100/mean(thirty$nHets),t_het$p.value);
 t_hom <-t.test(fifteen$nRefHom,thirty$nRefHom, paired=T);
-printf("Ref Homs\t%f\t%f\t%f\t%f\t%f\n",mean(thirty$nRefHom),mean(fifteen$nRefHom),
-t_hom$estimate,t_hom$estimate/mean(thirty$nRefHom),t_hom$p.value);
+printf("Ref Homs\t%f\t%f\t%f\t%f\t%e\n",mean(thirty$nRefHom),mean(fifteen$nRefHom),
+t_hom$estimate,t_hom$estimate*100/mean(thirty$nRefHom),t_hom$p.value);
 t_indel <- t.test(fifteen$indel,thirty$indel, paired=T);
-printf("INDELs\t%f\t%f\t%f\t%f\t%f\n",mean(thirty$indel),mean(fifteen$indel),
-t_indel$estimate,t_indel$estimate/mean(thirty$indel),t_indel$p.value);
+printf("INDELs\t%f\t%f\t%f\t%f\t%e\n",mean(thirty$indel),mean(fifteen$indel),
+t_indel$estimate,t_indel$estimate*100/mean(thirty$indel),t_indel$p.value);
 sink();

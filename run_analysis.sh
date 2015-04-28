@@ -20,4 +20,5 @@ ga_30x_jobid=`bsub -q basement -w "numdone($ds_30x_jobid,*)" -o log/call.%I.o -e
 cd ../..
 
 #analysis
-bsub -w "done($ga_15x_jobid) && done($ga_30x_jobid)" -M 18000 -n 1 -R 'span[hosts=1] select[mem>18000] rusage[mem=18000]' -J "${set}_analysis"-- ./analysis.sh greek_bams/30x/30x_annot.vcf.gz greek_bams/15x/15x_annot.vcf.gz
+bsub -w "done($ga_15x_jobid) && done($ga_30x_jobid)" -M 18000 -n 1 -R 'span[hosts=1] select[mem>18000] rusage[mem=18000]' -J "${set}_analysis"-- ./analysis.sh greek_bams/30x/30x_annot.vcf.gz greek_bams/15x/15x_annot.vcf.gz paper/data/all
+bsub -w "done($ga_15x_jobid) && done($ga_30x_jobid)" -M 18000 -n 1 -R 'span[hosts=1] select[mem>18000] rusage[mem=18000]' -J "${set}_analysis"-- ./analysis.sh greek_bams/30x/30x_isec.vcf.gz greek_bams/15x/15x_isec.vcf.gz paper/data/in1kg
