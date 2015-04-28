@@ -1,0 +1,1 @@
+grep -H 'paired in' *.flagstat | tr '.:' ' ' | awk 'BEGIN{OFS="\t"; print "lane","total reads","pass reads","fail reads","total cov","pass cov";} {sub(/_/,".",$1);print $1, $3+$5, $3, $5, (($3+$5)*151)/(3.3*10^9), ($3*151)/(3.3*10^9)}' > /lustre/scratch114/projects/hiseqx_test/paper/data/lane_stats.tsv
