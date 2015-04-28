@@ -2,6 +2,7 @@
 
 \usepackage{pgfplotstable}
 \usepackage{graphicx}
+\usepackage{longtable}
 
 
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
@@ -65,7 +66,25 @@
          columns/mean diff/.style={fixed,precision=2, column type=r},
          columns/percent mean diff/.style={fixed,precision=3, column type=r},
          columns/p value/.style={sci,precision=3, column type=r},
-       ]{data/1kg_analysis.tsv}
+       ]{data/in1kg_analysis.tsv}
+    \end{center}
+  \end{table}
+
+  \begin{table}[!h]
+    \begin{center}
+      \label{psc_table}
+      \caption{Unfiltered per sample paired comparisons}
+      \pgfplotstabletypeset[
+         col sep=tab,
+         header=true,
+         columns={field,30x mean,15x mean,mean diff,percent mean diff,p value},
+         columns/field/.style={column name=Variant type, string type, column type=l},
+         columns/30x mean/.style={fixed,precision=2, column type=r},
+         columns/15x mean/.style={fixed,precision=2, column type=r},
+         columns/mean diff/.style={fixed,precision=2, column type=r},
+         columns/percent mean diff/.style={fixed,precision=3, column type=r},
+         columns/p value/.style={sci,precision=3, column type=r},
+       ]{data/all_analysis.tsv}
     \end{center}
   \end{table}
 
@@ -84,38 +103,19 @@
 
   \newpage
   \section{Appendix A - Sample/Lane Characteristics}
-  \begin{table}[!h]
-    \begin{center}
-      \label{sample_table}
-      \caption{Sample characteristics (each lane contains one sample)}
-      \pgfplotstabletypeset[
-        col sep=tab,
-        header=true,
-        columns={lane,total reads,pass reads,fail reads},
-        columns/lane/.style={column name=Lane, string type, column type=l},
-      ]{data/lanestats.tsv}
-    \end{center}
-  \end{table}
+  \begin{center}
+    \pgfplotstabletypeset[
+      begin table=\begin{longtable},
+      end table=\end{longtable},
+      col sep=tab,
+      header=true,
+      columns={lane,total reads,pass reads,fail reads},
+      columns/lane/.style={column name=Lane, string type, column type=l},
+    ]{data/lanestats.tsv}
+  \end{center}
 
   \newpage
   \section{Appendix B - Raw data stats}
-  \begin{table}[!h]
-    \begin{center}
-      \label{psc_table}
-      \caption{Per sample paired comparisons}
-      \pgfplotstabletypeset[
-         col sep=tab,
-         header=true,
-         columns={field,30x mean,15x mean,mean diff,percent mean diff,p value},
-         columns/field/.style={column name=Variant type, string type, column type=l},
-         columns/30x mean/.style={fixed,precision=2, column type=r},
-         columns/15x mean/.style={fixed,precision=2, column type=r},
-         columns/mean diff/.style={fixed,precision=2, column type=r},
-         columns/percent mean diff/.style={fixed,precision=3, column type=r},
-         columns/p value/.style={sci,precision=3, column type=r},
-       ]{data/all_analysis.tsv}
-    \end{center}
-  \end{table}
   \begin{figure}
     \caption{Chr 6 SNPs by allele frequency}
     \includegraphics[width=\textwidth]{data/all_snp}
