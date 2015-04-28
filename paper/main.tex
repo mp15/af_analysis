@@ -54,7 +54,7 @@
   \begin{table}[!h]
     \begin{center}
       \label{psc_table}
-      \caption{Per sample paired comparisons}
+      \caption{Per sample paired comparisons for chr6 1KG sites only}
       \pgfplotstabletypeset[
          col sep=tab,
          header=true,
@@ -65,7 +65,7 @@
          columns/mean diff/.style={fixed,precision=2, column type=r},
          columns/percent mean diff/.style={fixed,precision=3, column type=r},
          columns/p value/.style={sci,precision=3, column type=r},
-       ]{data/analysis.tsv}
+       ]{data/1kg_analysis.tsv}
     \end{center}
   \end{table}
 
@@ -96,5 +96,34 @@
       ]{data/lanestats.tsv}
     \end{center}
   \end{table}
+
+  \newpage
+  \section{Appendix B - Raw data stats}
+  \begin{table}[!h]
+    \begin{center}
+      \label{psc_table}
+      \caption{Per sample paired comparisons}
+      \pgfplotstabletypeset[
+         col sep=tab,
+         header=true,
+         columns={field,30x mean,15x mean,mean diff,percent mean diff,p value},
+         columns/field/.style={column name=Variant type, string type, column type=l},
+         columns/30x mean/.style={fixed,precision=2, column type=r},
+         columns/15x mean/.style={fixed,precision=2, column type=r},
+         columns/mean diff/.style={fixed,precision=2, column type=r},
+         columns/percent mean diff/.style={fixed,precision=3, column type=r},
+         columns/p value/.style={sci,precision=3, column type=r},
+       ]{data/all_analysis.tsv}
+    \end{center}
+  \end{table}
+  \begin{figure}
+    \caption{Chr 6 SNPs by allele frequency}
+    \includegraphics[width=\textwidth]{data/all_snp}
+  \end{figure}
+  \begin{figure}
+    \caption{Chr 6 INDELs by allele frequency}
+    \includegraphics[width=\textwidth]{data/all_indel}
+  \end{figure}
+
 
 \end{document}
