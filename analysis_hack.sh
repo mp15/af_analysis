@@ -4,8 +4,8 @@ input_1=$1;
 input_2=$2;
 output_prefix=$3;
 
-temp1=`mktemp af_1XXXX`;
-temp2=`mktemp af_2XXXX`;
+temp1=`mktemp ac_1XXXX`;
+temp2=`mktemp ac_2XXXX`;
 
 grep '^AC' ${input_1}.hack.bstats > $temp1
 grep '^AC' ${input_2}.hack.bstats > $temp2
