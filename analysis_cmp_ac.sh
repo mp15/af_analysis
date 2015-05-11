@@ -3,7 +3,7 @@ set -e
 input_1=$1;
 output_prefix=$2;
 
-temp1=`mktemp GCsS_XXXX`;
+temp1=`mktemp AC_cmp_XXXX`;
 
 grep '^AC' ${input_1} > $temp1
 
