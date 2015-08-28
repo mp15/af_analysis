@@ -1,0 +1,126 @@
+\documentclass[final,xcolor=table]{beamer}
+\mode<presentation> {
+	\usetheme{wtsi}
+}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern} % load a font with all the characters
+\usepackage[english]{babel}
+\usepackage{amsmath,amsthm, amssymb, latexsym}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\usepackage[orientation=portrait,size=a0,scale=1.4,debug]{beamerposter}
+\usefonttheme[onlymath]{serif}
+\boldmath
+\setbeamertemplate{caption}[numbered]
+
+\title{30x vs 15x - What is the difference?}
+\author{Martin O. Pollard, Joshua C. Randall, Manjinder S. Sandhu, Inês Barroso, Eleftheria Zeggini, George Dedoussis, Jeffrey C. Barrett}
+\institute[Wellcome Trust Sanger Institute]{Wellcome Trust Sanger Institute}
+\date{Today}
+
+\begin{document}
+\newcommand{\usericon}[1]{\includegraphics[width=#1\textwidth]{../images/person}}
+\begin{frame}{}
+    \begin{columns}
+    % ---------------------------------------------------------%
+    % Set up a column 
+    \begin{column}{.49\textwidth}
+        \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
+            \begin{minipage}[T]{.95\textwidth}  % tweaks the width, makes a new \textwidth
+            \begin{block}{Introduction}
+                Whilst the cost of sequencing has decreased substantially in recent years, cost and rate limitations remain a non-negligible factor and thus care must be taken both during sample selection and with the choice of experiment parameters, such as intended coverage, to take into account these limitations. By so doing we ensure that our experiments yield the strongest possible evidence for our experimental hypotheses from a given amount of funding.
+
+            \end{block}
+            \begin{block}{Research Question}
+\begin{figure}
+\centering
+\begin{tikzpicture}[node distance=5.5cm]
+\node (sci1) {\usericon{0.1}};
+\node (lab2)[below of=sci1, yshift=-2.4cm] {High Coverage};
+\node (sci2a)[right of=sci1, xshift=5cm, yshift=3cm] {\usericon{0.05}};
+\node (sci2b)[below of=sci2a] {\usericon{0.05}};
+\node (lab2)[below of=sci2b] {Medium Coverage};
+\node (sci4a)[right of=sci2a, xshift=3.5cm] {\usericon{0.025}};
+\node (sci4b)[below of=sci4a] {\usericon{0.025}};
+\node (sci4c)[right of=sci4a] {\usericon{0.025}};
+\node (sci4d)[below of=sci4c] {\usericon{0.025}};
+\node (lab2)[below of=sci4d, xshift=-2.6cm] {Low Coverage};
+
+\end{tikzpicture}
+\end{figure}
+            \end{block}
+            \begin{block}{Method}
+                \begin{itemize} \itemindent80pt
+                    \item 100 samples were taken from general Greek population
+                    \item Sequenced to 30x+ on Illumina HiSeq X
+                    \item Mapped using BWA MEM 0.7.12 to hs37d5 by Sanger Core Sequencing
+                    \item Downsampled to 30x and 15x using samtools 1.2
+                    \item Variant Calling and Genotyped Using GATK 3.x
+                    \item Optional filtering with VQSR
+                \end{itemize}
+                The variant calls were compared using bcftools with the 30x data as a truth set and the effects of a reduction in coverage was assessed.
+            \end{block}
+            \begin{block}{Results}
+                \begin{figure}
+                \includegraphics[width=0.47\textwidth]{../data/all_present_snp}
+                \includegraphics[width=0.47\textwidth]{../data/all_present_indel}
+                \caption{Percentage of variants present in both 15x and 30x prior to VQSR}
+                \label{fig:all_present}
+                \end{figure}
+
+                \begin{figure}
+                \includegraphics[width=0.47\textwidth]{../data/vqsr_present_snp}
+                \includegraphics[width=0.47\textwidth]{../data/vqsr_present_indel}
+                \caption{Percentage of variants present in both 15x and 30x after VQSR}
+                \label{fig:vqsr_present}
+                \end{figure}
+
+Figures \ref{fig:all_present} and \ref{fig:vqsr_present} show that the vast majority of SNVs captured in the 30x set were also captured in the 15x set. Similarly a large proportion of the INDELs sites were present in both sets, however the presence of a significant number of sites called variant in the 15x but not 30x INDEL results suggest that there is quite a bit of noise in our INDEL results. This is likely down to the fact that Illumina is an amplification type sequencing system and also employs PCR in its library preparation which is subject to slippage.
+
+            \end{block}
+            \vfill
+          % ---------------------------------------------------------%
+          % end the column
+
+            \end{minipage}
+        \end{beamercolorbox}
+    \end{column}
+        \begin{column}{.49\textwidth}
+        \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
+            \begin{minipage}[T]{.95\textwidth}  % tweaks the width, makes a new \textwidth
+
+            \begin{block}{Results (continued)}
+
+                It is worth noting that in figure \ref{fig:vqsr_present} these noisy sites are still present indicating that VQSR is ineffective at identifying and removing these false positives.
+
+                \begin{figure}
+                \includegraphics[width=0.95\textwidth]{../data/vqsr_r2}
+                \caption{Dosage $R^2$ of Variants present in both 15x and 30x post VQSR}
+                \label{fig:r2}
+                \end{figure}
+
+                As shown in figure \ref{fig:r2} where variants were captured in both sets, there was an $R^2$ correlation of 0.99 between the genotypes. INDELs were less promising, with a greater difference in the sites captured between the two sets and an $R^2$ correlation of 0.90 for sites present in both. There are still accuracy gains to be had from sequencing for INDELs.
+
+            \end{block}
+            \begin{block}{Conclusions}
+                Sequencing at 15x coverage provides results that are good enough for population genetics worthwhile for nearly 2x the samples. SNVs don't show much improvement in accuracy above 15x. VQSR when used in combination with INDELs is unreliable and needs further filtering steps subsequent to that. INDELs are noisy because of PCR issues, PCR-Free methods need to become the norm.
+            \end{block}
+            \begin{block}{Acknowledgements}
+                Inês, Jeff and Manj for advice and guidance. Ele for samples. Joshua Randall for R and ggplot2 support
+            \end{block}
+            %\begin{block}{References}
+            %    [1] Zook, Justin M., Brad Chapman, Jason Wang, David Mittelman, Oliver Hofmann, Winston Hide, and Marc Salit. "Integrating Human Sequence Data Sets Provides a Resource of Benchmark Snp and Indel Genotype Calls." Nat Biotech 32, no. 3 (03//print 2014): 246-51.
+            %\end{block}
+            \vfill
+
+          % ---------------------------------------------------------%
+          % end the column
+
+            \end{minipage}
+        \end{beamercolorbox}
+    \end{column}
+    \end{columns}
+
+\end{frame}
+\end{document}

@@ -3,11 +3,11 @@
 \usepackage{pgfplotstable}
 \usepackage{graphicx}
 \usepackage{longtable}
-
+\usepackage{cite}
 
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
 
-\title{HiSeq X 30x vs 15x Comparison}
+\title{HiSeq X 30x vs 15x Comparison - Interim Report}
 \author{Martin O. Pollard}
 
 
@@ -22,36 +22,70 @@
 
   \section{Introduction}
 
-  The cost of sequencing has decreased substanially in recent years, dropping to
-  below \$1000 per sample if you exclude informatics and analysis costs. However
-  the cost remains non-negliable and thus care must be taken in sample
-  selection and choice of sequencing parameters such as intended coverage, in
-  order to ensure the maximum amount of science is possible from what has been
-  chosen.
+  The cost of sequencing has decreased substanially in recent years, dropping to below \$1000 per sample if you exclude informatics and analysis costs, this has allowed many sequencing projects at scales that were not . However
+  the cost remains non-negliable and thus care must be taken in sample selection and choice of sequencing parameters such as intended coverage, in
+  order to ensure the maximum amount of science is possible from what has been chosen.
 
   \section{Methods}
-  100 samples from the general greek population were sequenced on the Illumina
-  HiSeq X with an intended depth of 30x. The samples were aligned using BWA MEM
-  0.7.8 to the 1000 Genomes hs37d5 reference; duplicates were then marked using
-  biobambam and the files were stored in the sequencing IRODS.  These files were
-  downloaded and downsampled to both 30x and 15x based on a genome size of 3.3 *
-  $10^{9}$ using samtools view. From this the downsampled BAMs where fed to GATK
-  HaplotypeCaller 3.3 and per sample GVCF files were created for chromosome 6
-  only. Lastly the GVCF files were combined and genotyped across all 100 samples
-  using GATK GenotypeGVCFs to create two VCF files, one for the 15x data and one
-  for the 30x data. As part of this process the VCF file's ID column is filled
-  with IDs derived from DBSNP version 141.
+  One hundred samples from the general Greek population were sequenced on the Illumina HiSeq X with an target depth of 30x and PhiX spike-in. Each sample was processed as a single lane (listed in Appendix~\ref{app:lanes}) and processed through the standard Illumina HiSeq Control Software and Basecaller. The basecall files for each lane were processed using the Sanger's Illumina2BAM software to translate them directly into BAM files; this software also marks adaptor contamination marked and decodes barcodes for removal. At this point the reads the PhiX is separated from the Sample reads for futher processing. The PhiX from each lane is mapped using BWA and is used to create a spatial filter mask to remove certain spatially oriented artefacts. The sample reads are converted to FASTQ and aligned using BWA MEM 0.7.8~\cite{bwamem} to the 1000 Genomes hs37d5 reference which includes a set of decoy contigs to remove common mismappings due to underrepresented sequence.  The results of this mapping are merged back into the master sample BAM file using Illumina2BAM MergeAlign and the spatial filter calculated from the PhiX is applied to add a QC fail flag to affected reads. Finally PCR and optical duplicates are marked using biobambam markduplicates and the files were archived in CRAM format in the sequencing IRODS with a copy sent to the European Genotype Archive (EGA).
 
-  To provide us with additional information about the variants discovered the
-  VCF we used bcftools annotate to add the 1000 Genomes Phase 3 European Allele
-  Frequency information to each site.  Lastly in order to restrict variants
-  sites to those that are highly likely to be real we filtered the sites in the
-  VCF to those present in 1000 Genomes Phase 3 by using bcftools isec.
+  To analyse the data the files were downloaded from IRODS and downsampled to BAMs at both 30x and 15x coverage based on a genome size of 3.3 *  $10^{9}$ by using samtools view with the -s option and a fixed seed. The downsampled BAMs were processed into per sample GVCF files using GATK HaplotypeCaller~\cite{gatk} 3.3, this was done for chromosome 6 only to reduce processing time. Lastly the GVCF files were combined and genotyped across all 100 samples to create VCF files for each coverage level using GATK GenotypeGVCFs. To aid in later statistics gathering known variant sites were identified and labelled with IDs from dbSNP version 141~\cite{dbsnp}.
+
+  In order to restrict variants sites to those that are highly likely to be real we filtered the sites in the VCF to those present in 1000 Genomes Phase 3 by using bcftools isec. We justified this by the fact that the samples were from a European population and with 100 samples we only had the power to reliably discover common variation.
 
   \section{Results}
-  After marking of reads with cycle INDEL bubbles several of the samples
-  coverage fell below 30x. We ignored this and treated these samples as if they
-  were 30x.
+  After marking of reads with cycle INDEL bubbles several of the samples coverage fell below 30x. We ignored this and treated these samples as if they
+  were 30x as the difference was likely to be small.
+  
+  \begin{figure}[h]
+    \caption{Comparison of variant calls between 30x and 15x}
+    \label{fig:compare}
+    \includegraphics[width=0.5\textwidth]{../data/1kg_present_percent}
+    \includegraphics[width=0.5\textwidth]{../data/1kg_r2}
+  \end{figure}
+
+  As shown in figure~\ref{fig:compare} both the sites called and the genotypes called on them are highly similar between the different coverages.
+
+  \section{Acknowledgements}
+  With thanks to Tommy Carstensen for help in locating the machine algorithm for bcftools
+  per sample $r^{2}$. Also thanks to Jeffery Barrett for suggestions about presentation and direction;
+  Ines Barroso for commissioning the project; Joshua Randall for getting me out of a spot
+  with ggplot2 and Manj Sandhu for suggestions and support.
+
+  The GATK3 program was made available through the generosity of Medical and
+  Population Genetics program at the Broad Institute, Inc.
+
+  \section{Citations}
+  \bibliography{ds_15x_30x}{}
+  \bibliographystyle{plain}
+
+
+  \newpage
+  \appendix
+  \section{Sample/Lane Characteristics}
+  \label{app:lanes}
+  Coverage calculated based on a genome size of 3.3 * $10^{9}$
+  \begin{center}
+    \pgfplotstabletypeset[
+      begin table=\begin{longtable},
+      end table=\end{longtable},
+      col sep=tab,
+      header=true,
+      columns={lane,total reads,pass reads,fail reads,total cov, pass cov},
+      columns/lane/.style={column name=Lane, string type, column type=l},
+    ]{../data/lane_stats.tsv}
+  \end{center}
+
+  \newpage
+  \section{Raw data stats}
+  \begin{figure}[h]
+    \caption{Chr 6 SNPs by allele frequency}
+    \includegraphics[width=\textwidth]{../data/all_snp}
+  \end{figure}
+  \begin{figure}[h]
+    \caption{Chr 6 INDELs by allele frequency}
+    \includegraphics[width=\textwidth]{../data/all_indel}
+  \end{figure}
   \begin{table}[h]
     \begin{center}
       \label{psc_table}
@@ -66,9 +100,10 @@
          columns/mean diff/.style={fixed,precision=2, column type=r},
          columns/percent mean diff/.style={fixed,precision=3, column type=r},
          columns/p value/.style={sci,precision=3, column type=r},
-       ]{data/in1kg_analysis.tsv}
+       ]{../data/in1kg_analysis.tsv}
     \end{center}
   \end{table}
+\iffalse
 
   \begin{table}[h]
     \begin{center}
@@ -84,47 +119,18 @@
          columns/mean diff/.style={fixed,precision=2, column type=r},
          columns/percent mean diff/.style={fixed,precision=3, column type=r},
          columns/p value/.style={sci,precision=3, column type=r},
-       ]{data/all_analysis.tsv}
+       ]{../data/all_analysis.tsv}
     \end{center}
   \end{table}
 
   \begin{figure}
     \caption{Chr 6 SNPs in also found 1KGP3 by allele frequency}
-    \includegraphics[width=\textwidth]{data/in1kg_snp}
+    \includegraphics[width=\textwidth]{../data/in1kg_snp}
   \end{figure}
   \begin{figure}
     \caption{Chr 6 INDELs also found in 1KGP3 by allele frequency}
-    \includegraphics[width=\textwidth]{data/in1kg_indel}
+    \includegraphics[width=\textwidth]{../data/in1kg_indel}
   \end{figure}
-
-  \section{Acknowledgements}
-  The GATK3 program was made available through the generosity of Medical and
-  Population Genetics program at the Broad Institute, Inc.
-
-  \newpage
-  \section{Appendix A - Sample/Lane Characteristics}
-  Coverage calculated based on a genome size of 3.3 * $10^{9}$
-  \begin{center}
-    \pgfplotstabletypeset[
-      begin table=\begin{longtable},
-      end table=\end{longtable},
-      col sep=tab,
-      header=true,
-      columns={lane,total reads,pass reads,fail reads,total cov, pass cov},
-      columns/lane/.style={column name=Lane, string type, column type=l},
-    ]{data/lane_stats.tsv}
-  \end{center}
-
-  \newpage
-  \section{Appendix B - Raw data stats}
-  \begin{figure}[h]
-    \caption{Chr 6 SNPs by allele frequency}
-    \includegraphics[width=\textwidth]{data/all_snp}
-  \end{figure}
-  \begin{figure}[h]
-    \caption{Chr 6 INDELs by allele frequency}
-    \includegraphics[width=\textwidth]{data/all_indel}
-  \end{figure}
-
+\fi
 
 \end{document}
