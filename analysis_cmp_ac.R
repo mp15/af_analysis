@@ -1,4 +1,5 @@
 require("ggplot2");
+require("reshape");
 
 options <- commandArgs(trailingOnly = TRUE)
 
