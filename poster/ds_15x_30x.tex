@@ -59,7 +59,7 @@
                     \item Variant Calling and Genotyped Using GATK 3.x
                     \item Optional filtering with VQSR
                 \end{itemize}
-                {The effects of a reduction in coverage was assessed by comparing taking the 30x data for each sample as a truth set and comparing it with the 15x data for the same sample. The comparison was done using RTG vcfeval to group the variants into TP, FP, and FN and then using bcftools stats to count them.}
+                {The effects of a reduction in coverage was assessed by comparing taking the 30x data for each sample as a truth set and comparing it with the 15x data for the same sample. The comparison was done using RTG vcfeval to group the variants into TP, FP, and FN and then using bcftools stats to count.}
             \end{block}
             \begin{block}{Results}
                 \begin{figure}
@@ -67,15 +67,14 @@
                 \caption{TPR for NA12878 based on GIAB 0.2 at various depths of sequencing}
                 \label{fig:na12878_ds}
                 \end{figure}
-{In our previous experiments shown in figure \ref{fig:na12878_ds} 15x was shown to deliver a 80\% of the variants in GAIB whilst 30x delivered 90\% of the variants. For a convincing result however, a larger sample size is needed.}
+{In our previous experiments[1] shown in figure \ref{fig:na12878_ds} 15x was shown to deliver a 95\% of the SNVs in GAIB whilst 30x delivered 98\% of the SNVs. For a convincing result however, a larger sample size is needed.}
                 \begin{figure}
                 \includegraphics[width=0.47\textwidth]{../data/all_present_snp}
                 \includegraphics[width=0.47\textwidth]{../data/all_present_indel}
                 \caption{Percentage of variants present in both 15x and 30x prior to VQSR}
                 \label{fig:all_present}
                 \end{figure}
-{Figures \ref{fig:all_present} and \ref{fig:vqsr_present} show that the vast majority of SNVs captured in the 30x set were also captured in the 15x set. Similarly a large proportion of the INDELs sites were present in both sets, however the presence of a significant number of sites called variant in the 15x but not 30x INDEL results}
-
+{Figures \ref{fig:all_present} and \ref{fig:vqsr_present} show that the vast majority of SNVs captured in the 30x set were also captured in the 15x set. Similarly a large proportion of the}
             \end{block}
             \vfill
           % ---------------------------------------------------------%
@@ -96,9 +95,9 @@
                 \label{fig:vqsr_present}
                 \end{figure}
 
-                {suggest that there is quite a bit of noise in our INDEL results. This is likely down to the fact that the Illumina HiSeq is an amplification type sequencing system and also employs PCR in its library preparation which is subject to slippage.}
+                {INDEL sites were present in both sets, however the presence of a significant number of sites called variant in the 15x but not 30x INDEL results suggest that there is quite a bit of artefactual noise. This is likely down to the fact that the Illumina HiSeq is an amplification type sequencing system and also employs PCR in its library preparation which is subject to slippage.}
 
-                {It is worth noting that in figure \ref{fig:vqsr_present} these noisy sites are still present indicating that VQSR is ineffective at identifying and removing these false positives.}
+                {In figure \ref{fig:vqsr_present} these noise sites are still present indicating that VQSR is ineffective at identifying and removing these false positives.}
 
                 \begin{figure}
                 \includegraphics[width=0.95\textwidth]{../data/vqsr_r2}
@@ -106,11 +105,11 @@
                 \label{fig:r2}
                 \end{figure}
 
-                As shown in figure \ref{fig:r2} where variants were captured in both sets, there was an $R^2$ correlation of 0.99 between the genotypes. INDELs were less promising, with a greater difference in the sites captured between the two sets and an $R^2$ correlation of 0.90 for sites present in both. There are still accuracy gains to be had from sequencing for INDELs.
+                Figure \ref{fig:r2} shows that where variants were captured in both sets, there was an $R^2$ correlation of 0.99 between the genotypes. INDELs were less promising, with a greater difference in the sites captured between the two sets and an $R^2$ correlation of 0.90 for sites present in both. There are still accuracy gains to be had from sequencing for INDELs.
 
             \end{block}
             \begin{block}{Conclusions}
-                Sequencing at 15x coverage provides results that are good enough for population genetics worthwhile for nearly 2x the samples. SNVs don't show much improvement in accuracy above 15x. VQSR when used in combination with INDELs is unreliable and needs further filtering steps subsequent to that. INDELs are noisy because of PCR issues, PCR-Free methods need to become the norm.
+                Sequencing at 15x coverage provides results that are good enough for population genetics worthwhile for nearly 2x the samples. SNVs don't show much improvement in accuracy above 15x. INDEL VQSR is unreliable and needs further filtering steps subsequent to that. Given observed PCR issues, PCR-free methods need to become the norm.
             \end{block}
             \begin{block}{Acknowledgements}
                 Inês, Jeff and Manj for advice and guidance. Ele for samples. Joshua Randall for R and ggplot2 support
