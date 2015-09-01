@@ -59,7 +59,7 @@
                     \item Variant Calling and Genotyped Using GATK 3.x
                     \item Optional filtering with VQSR
                 \end{itemize}
-                The variant calls were compared using bcftools with the 30x data as a truth set and the effects of a reduction in coverage was assessed.
+                {The effects of a reduction in coverage was assessed by comparing taking the 30x data for each sample as a truth set and comparing it with the 15x data for the same sample. The comparison was done using RTG vcfeval to group the variants into TP, FP, and FN and then using bcftools stats to count them.}
             \end{block}
             \begin{block}{Results}
                 \begin{figure}
@@ -115,9 +115,11 @@
             \begin{block}{Acknowledgements}
                 Inês, Jeff and Manj for advice and guidance. Ele for samples. Joshua Randall for R and ggplot2 support
             \end{block}
-            %\begin{block}{References}
+            \begin{block}{References}
             %    [1] Zook, Justin M., Brad Chapman, Jason Wang, David Mittelman, Oliver Hofmann, Winston Hide, and Marc Salit. "Integrating Human Sequence Data Sets Provides a Resource of Benchmark Snp and Indel Genotype Calls." Nat Biotech 32, no. 3 (03//print 2014): 246-51.
-            %\end{block}
+                [1] M. O. Pollard, T. M. Keane, S. A. McCarthy, J. C. Randall, R. M. Durbin "Using haploid human DNA to design and evaluate the HiSeq X data processing strategy." ASHG 2014 Abstracts (1600M)
+
+            \end{block}
             \vfill
 
           % ---------------------------------------------------------%
