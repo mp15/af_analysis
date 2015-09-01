@@ -22,9 +22,9 @@
 \begin{document}
 \newcommand{\usericon}[1]{\includegraphics[width=#1\textwidth]{../images/person}}
 \begin{frame}{}
-    \begin{columns}
+    \begin{columns}[t]
     % ---------------------------------------------------------%
-    % Set up a column 
+    % Set up a column
     \begin{column}{.49\textwidth}
         \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
             \begin{minipage}[T]{.95\textwidth}  % tweaks the width, makes a new \textwidth
@@ -37,7 +37,7 @@
 \centering
 \begin{tikzpicture}[node distance=5.5cm]
 \node (sci1) {\usericon{0.1}};
-\node (lab2)[below of=sci1, yshift=-2.4cm] {High Coverage};
+\node (lab2)[below of=sci1, yshift=-2.5cm] {High Coverage};
 \node (sci2a)[right of=sci1, xshift=5cm, yshift=3cm] {\usericon{0.05}};
 \node (sci2b)[below of=sci2a] {\usericon{0.05}};
 \node (lab2)[below of=sci2b] {Medium Coverage};
@@ -46,9 +46,9 @@
 \node (sci4c)[right of=sci4a] {\usericon{0.025}};
 \node (sci4d)[below of=sci4c] {\usericon{0.025}};
 \node (lab2)[below of=sci4d, xshift=-2.6cm] {Low Coverage};
-
 \end{tikzpicture}
 \end{figure}
+                Can we use a reduce per-sample depth of coverage to increase total sample size without losing excessive per sample information content?
             \end{block}
             \begin{block}{Method}
                 \begin{itemize} \itemindent80pt
@@ -63,20 +63,18 @@
             \end{block}
             \begin{block}{Results}
                 \begin{figure}
+                \includegraphics[width=0.95\textwidth]{../data/downsampling}
+                \caption{TPR for NA12878 based on GIAB 0.2 at various depths of sequencing}
+                \label{fig:na12878_ds}
+                \end{figure}
+{In our previous experiments shown in figure \ref{fig:na12878_ds} 15x was shown to deliver a 80\% of the variants in GAIB whilst 30x delivered 90\% of the variants. For a convincing result however, a larger sample size is needed.}
+                \begin{figure}
                 \includegraphics[width=0.47\textwidth]{../data/all_present_snp}
                 \includegraphics[width=0.47\textwidth]{../data/all_present_indel}
                 \caption{Percentage of variants present in both 15x and 30x prior to VQSR}
                 \label{fig:all_present}
                 \end{figure}
-
-                \begin{figure}
-                \includegraphics[width=0.47\textwidth]{../data/vqsr_present_snp}
-                \includegraphics[width=0.47\textwidth]{../data/vqsr_present_indel}
-                \caption{Percentage of variants present in both 15x and 30x after VQSR}
-                \label{fig:vqsr_present}
-                \end{figure}
-
-Figures \ref{fig:all_present} and \ref{fig:vqsr_present} show that the vast majority of SNVs captured in the 30x set were also captured in the 15x set. Similarly a large proportion of the INDELs sites were present in both sets, however the presence of a significant number of sites called variant in the 15x but not 30x INDEL results suggest that there is quite a bit of noise in our INDEL results. This is likely down to the fact that Illumina is an amplification type sequencing system and also employs PCR in its library preparation which is subject to slippage.
+{Figures \ref{fig:all_present} and \ref{fig:vqsr_present} show that the vast majority of SNVs captured in the 30x set were also captured in the 15x set. Similarly a large proportion of the INDELs sites were present in both sets, however the presence of a significant number of sites called variant in the 15x but not 30x INDEL results}
 
             \end{block}
             \vfill
@@ -86,13 +84,21 @@ Figures \ref{fig:all_present} and \ref{fig:vqsr_present} show that the vast majo
             \end{minipage}
         \end{beamercolorbox}
     \end{column}
-        \begin{column}{.49\textwidth}
+    \begin{column}{.49\textwidth}
         \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
             \begin{minipage}[T]{.95\textwidth}  % tweaks the width, makes a new \textwidth
 
             \begin{block}{Results (continued)}
+                \begin{figure}
+                \includegraphics[width=0.47\textwidth]{../data/vqsr_present_snp}
+                \includegraphics[width=0.47\textwidth]{../data/vqsr_present_indel}
+                \caption{Percentage of variants present in both 15x and 30x after VQSR}
+                \label{fig:vqsr_present}
+                \end{figure}
 
-                It is worth noting that in figure \ref{fig:vqsr_present} these noisy sites are still present indicating that VQSR is ineffective at identifying and removing these false positives.
+                {suggest that there is quite a bit of noise in our INDEL results. This is likely down to the fact that the Illumina HiSeq is an amplification type sequencing system and also employs PCR in its library preparation which is subject to slippage.}
+
+                {It is worth noting that in figure \ref{fig:vqsr_present} these noisy sites are still present indicating that VQSR is ineffective at identifying and removing these false positives.}
 
                 \begin{figure}
                 \includegraphics[width=0.95\textwidth]{../data/vqsr_r2}
