@@ -13,6 +13,7 @@
 \usefonttheme[onlymath]{serif}
 \boldmath
 \setbeamertemplate{caption}[numbered]
+\setbeamertemplate{bibliography item}{\insertbiblabel}
 
 \title{30x vs 15x - What is the difference?}
 \author{Martin O. Pollard, Joshua C. Randall, Manjinder S. Sandhu, Inês Barroso, Eleftheria Zeggini, George Dedoussis, Jeffrey C. Barrett}
@@ -67,7 +68,7 @@
                 \caption{TPR for NA12878 based on GIAB 0.2 at various depths of sequencing}
                 \label{fig:na12878_ds}
                 \end{figure}
-{In our previous experiments[1] shown in figure \ref{fig:na12878_ds} 15x was shown to deliver a 95\% of the SNVs in GAIB whilst 30x delivered 98\% of the SNVs. For a convincing result however, a larger sample size is needed.}
+{In our previous experiments\cite{bib:pollard} shown in figure \ref{fig:na12878_ds} 15x was shown to deliver a 95\% of the SNVs in GAIB whilst 30x delivered 98\% of the SNVs. For a convincing result however, a larger sample size is needed.}
                 \begin{figure}
                 \includegraphics[width=0.47\textwidth]{../data/all_present_snp}
                 \includegraphics[width=0.47\textwidth]{../data/all_present_indel}
@@ -116,7 +117,14 @@
             \end{block}
             \begin{block}{References}
             %    [1] Zook, Justin M., Brad Chapman, Jason Wang, David Mittelman, Oliver Hofmann, Winston Hide, and Marc Salit. "Integrating Human Sequence Data Sets Provides a Resource of Benchmark Snp and Indel Genotype Calls." Nat Biotech 32, no. 3 (03//print 2014): 246-51.
-                [1] M. O. Pollard, T. M. Keane, S. A. McCarthy, J. C. Randall, R. M. Durbin "Using haploid human DNA to design and evaluate the HiSeq X data processing strategy." ASHG 2014 Abstracts (1600M)
+\begin{thebibliography}{1}
+
+\bibitem{bib:pollard},
+M. O. Pollard, T. M. Keane, S. A. McCarthy, J. C. Randall, R. M. Durbin
+\emph{Using haploid human DNA to design and evaluate the HiSeq X data processing strategy.},
+ASHG 2014 Abstracts,
+1600M
+\end{thebibliography}
 
             \end{block}
             \vfill
