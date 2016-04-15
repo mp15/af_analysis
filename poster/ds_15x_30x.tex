@@ -98,7 +98,7 @@
 
                 {INDEL sites were present in both sets, however the presence of a significant number of sites called variant in the 15x but not 30x INDEL results suggest that there is quite a bit of artefactual noise. This is likely down to the fact that the Illumina HiSeq is an amplification type sequencing system and also employs PCR in its library preparation which is subject to slippage.}
 
-                {In figure \ref{fig:vqsr_present} these noise sites are still present indicating that VQSR is ineffective at identifying and removing these false positives.}
+                {In figure \ref{fig:vqsr_present} these noise sites are still present indicating that VQSR is ineffective at identifying and removing these false positives. This is likely due to a paucity of good annotations available as input data for the classifier.}
 
                 \begin{figure}
                 \includegraphics[width=0.95\textwidth]{../data/vqsr_r2}
@@ -106,11 +106,11 @@
                 \label{fig:r2}
                 \end{figure}
 
-                Figure \ref{fig:r2} shows that where variants were captured in both sets, there was an $R^2$ correlation of 0.99 between the genotypes. INDELs were less promising, with a greater difference in the sites captured between the two sets and an $R^2$ correlation of 0.90 for sites present in both. There are still accuracy gains to be had from sequencing for INDELs.
+                Figure \ref{fig:r2} shows that where variants were captured in both sets, there was an $R^2$ correlation of 0.99 between the genotypes. INDELs were less promising, with a greater difference in the sites captured between the two sets and an $R^2$ correlation of 0.90 for sites present in both.
 
             \end{block}
             \begin{block}{Conclusions}
-                Sequencing at 15x coverage provides results that are good enough for population genetics worthwhile for nearly 2x the samples. SNVs don't show much improvement in accuracy above 15x. INDEL VQSR is unreliable and needs further filtering steps subsequent to that. Given observed PCR issues, PCR-free methods need to become the norm.
+                Sequencing at 15x coverage delivers an increase in power through increased sample size without compromising quality. We also found that the annotations used by VQSR require further development before they can be relied upon to accurately classify INDELs. Finally given observed PCR issues, PCR-free methods need to become the norm.
             \end{block}
             \begin{block}{Acknowledgements}
                 Inês, Jeff and Manj for advice and guidance. Ele for samples. Joshua Randall for R and ggplot2 support
