@@ -9,19 +9,13 @@
 
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
 
-\title{HiSeq X 30x vs 15x Comparison - Interim Report}
+\title{Variant discovery, accuracy and coverage on the Illumina HiSeq X}
 \author{Martin O. Pollard}
 
-
 \begin{document}
-  \pagenumbering{gobble}
   \maketitle
-  \newpage
-  \pagenumbering{arabic}
-  \tableofcontents
-  \newpage
   \section{Abstract}
-  {We present the results from a sequencing experiment involving 100 samples from the general Greek populations intended to test effects of sequencing at 30 and 15x coverage by downsampling. We show that the differences in SNV discovery rates from 30x data is negliable compared to that obtained from the same samples sequenced at 15x coverage. We also show that where SNVs have been discovered in both call sets the information content measured by R-squared is largely the same.}
+  {We present the results from a sequencing experiment involving 100 samples from the general Greek populations intended to test effects of sequencing at 30 and 15x coverage by downsampling. We show that the differences in SNV discovery rates from 30x data is negliable compared to that obtained from the same samples sequenced at 15x coverage. We also show that where SNVs have been discovered in both call sets the information content measured by $r^{2}$ is largely the same.}
 
   \section{Introduction}
 
@@ -30,25 +24,57 @@
   {In this paper we will explore the effects of different two different rates of coverage on variant discovery and accuracy of genotyping. We will show that 15x sequencing gives good results in SNV discovery and typing compared to 30x data, allowing more samples to be sequenced for the same cost.}
 
   \section{Methods}
-  {One hundred samples from the general Greek population were sequenced on the Illumina HiSeq X with an target depth of 30x and PhiX spike-in. Each sample was processed as a single lane (listed in Appendix~\ref{app:lanes}) and processed through the standard Illumina HiSeq Control Software and Basecaller. The basecall files for each lane were processed using the Sanger's Illumina2BAM software to translate them directly into BAM files; this software also marks adaptor contamination marked and decodes barcodes for removal. At this point the reads the PhiX is separated from the Sample reads for futher processing. The PhiX from each lane is mapped using BWA and is used to create a spatial filter mask to remove certain spatially oriented artefacts. The sample reads are converted to FASTQ and aligned using BWA MEM 0.7.8~\cite{bwamem} to the 1000 Genomes hs37d5 reference which includes a set of decoy contigs to remove common mismappings due to underrepresented sequence.  The results of this mapping are merged back into the master sample BAM file using Illumina2BAM MergeAlign and the spatial filter calculated from the PhiX is applied to add a QC fail flag to affected reads. Finally PCR and optical duplicates are marked using biobambam markduplicates and the files were archived in CRAM format in the sequencing IRODS with a copy sent to the European Genotype Archive (EGA).}
+
+  {One hundred samples from the general Greek population were sequenced as well as the NA12878 sample. Upon arrival at Sanger all samples were first quanitified and sample identity checks were performed using a Fluidigm machine after which sample DNA was stored in a freezer at -80 degrees celcius. When sequencing was ordered the samples were defrosted and aliquots prepared. These aliquots underwent library preparation using the standard Sanger HiSeq X method. Size selection was performed in this process to target a size of 350 base pairs.}
+
+  {Sequencing was performed on the Sanger Institute's Illumina HiSeq X platform with an target depth of 30x and PhiX spike-in. For the NA12878 sample the version 1 chemistry was used, but for the Greek samples the version 2 chemistry was used. Each sample was processed as a single lane (listed in Appendix~\ref{app:lanes}) through the standard Illumina HiSeq Control Software and Basecaller to create the basecall files. Each basecall file for a given lane were transformed into unmapped BAMs using the Sanger's Illumina2BAM software; as part of this process the software also marked adaptor contamination and decoded barcodes for removal into BAM tags. At this point the reads from the PhiX control was separated from the sample reads for futher processing. The separated PhiX from each lane was mapped using BWA Backtrack and used to create a spatial filter mask which we would then use to remove certain spatially oriented artefacts within each lane.}
+
+  {To map the sample the reads were first converted to FASTQ and aligned using BWA MEM 0.7.8~\cite{bwamem} to the 1000 Genomes hs37d5 reference which includes a set of decoy contigs to remove common mismappings due to underrepresented sequence.  The alignment information resulting from this mapping was then merged back into the master sample BAM file using Illumina2BAM MergeAlign. Next the spatial filter calculated from the PhiX was applied to the mapped sample data and the QC fail flag was set for reads affected by spatial artefacts. Finally PCR and optical duplicates are marked using biobambam markduplicates and the files were archived in CRAM format in the sequencing IRODS with a copy sent to the European Genotype Archive (EGA).}
+
+  {After marking of reads with cycle INDEL bubbles the mean coverage several of the samples fell slightly below 30x (as shown in Appendix~\ref{app:lanes}). Owing to the fact that the loss was small we have ignored this and treated these samples as if they were 30x.}
 
   {To analyse the data the files were downloaded from IRODS and downsampled to BAMs at both 30x and 15x coverage based on a genome size of 3.3 *  $10^{9}$ by using samtools view with the -s option and a fixed seed. The downsampled BAMs were processed into per sample GVCF files using GATK HaplotypeCaller~\cite{gatk} 3.3, this was done for chromosome 6 only to reduce processing time. Lastly the GVCF files were combined and genotyped across all 100 samples to create VCF files for each coverage level using GATK GenotypeGVCFs. To aid in later statistics gathering known variant sites were identified and labelled with IDs from dbSNP version 141~\cite{dbsnp}.}
 
-  {In order to restrict variants sites to those that are highly likely to be real we filtered the sites in the VCF to those present in 1000 Genomes Phase 3 by using bcftools isec. We justified this by the fact that the samples were from a European population and with 100 samples we only had the power to reliably discover common variation.}
+  {Finally we filtered our variants by using the Broad's VQSR technique included in GATK.}
 
   \section{Results}
-  {After marking of reads with cycle INDEL bubbles several of the samples coverage fell below 30x. We ignored this and treated these samples as if they were 30x as the difference was likely to be small.}
+  \begin{figure}
+  \includegraphics[width=\textwidth]{../data/downsampling}
+  \caption{TPR for NA12878 based on GIAB 0.2 at various depths of sequencing}
+  \label{fig:na12878_ds}
+  \end{figure}
+  {As shown in figure \ref{fig:na12878_ds} if we downsample the NA12878 sample to 15x of coverage we will discover approximately 95\% of the known SNVs in Genome in a Bottle Truth set\cite{giab} compared to 98\% of the SNVs delivered by the 30x downsampling set. The INDELs from the same sample exhibited a larger drop off with about 79\% discovered at 30x and approximately 68\% discovered at 15x.}
 
-  \begin{figure}[h]
-    \caption{Comparison of variant calls between 30x and 15x}
-    \label{fig:compare}
-    \includegraphics[width=0.5\textwidth]{../data/1kg_present_percent}
-    \includegraphics[width=0.5\textwidth]{../data/1kg_r2}
+  \begin{figure}
+  \includegraphics[width=0.47\textwidth]{../data/all_present_snp}
+  \includegraphics[width=0.47\textwidth]{../data/all_present_indel}
+  \caption{Percentage of variants present on chr6 in both of the Greek 15x and 30x sets prior to VQSR}
+  \label{fig:all_present}
+  \end{figure}
+  \begin{figure}
+  \includegraphics[width=0.47\textwidth]{../data/vqsr_present_snp}
+  \includegraphics[width=0.47\textwidth]{../data/vqsr_present_indel}
+  \caption{Percentage of variants present on chr6 in both of the Greek 15x and 30x sets after VQSR}
+  \label{fig:vqsr_present}
   \end{figure}
 
-  {As shown in figure~\ref{fig:compare} both the sites called and the genotypes called on them are highly similar between the different coverages.}
+  {For a convincing result however, a larger sample size was needed, to provide this we then compared the 100 Greek samples at 15x and 30x. Figures \ref{fig:all_present} and \ref{fig:vqsr_present} show that the vast majority of SNVs captured in the 30x set were also captured in the 15x set. Similarly a large proportion of the INDEL sites were present in both sets, however the presence of a significant number of sites called variant in the 15x but not 30x INDEL results suggest that there is quite a bit of artefactual noise. This is likely down to the fact that the Illumina HiSeq is an amplification type sequencing system and also employs PCR in its library preparation which is subject to slippage.}
+
+  {In figure \ref{fig:vqsr_present} these noise sites are still present indicating that VQSR is ineffective at identifying and removing these false positives. This is likely due to a paucity of good annotations available as input data for the classifier.}
+
+  \begin{figure}
+  \includegraphics[width=0.95\textwidth]{../data/vqsr_r2}
+  \caption{Dosage $R^2$ of variants present on chr6 in both of the Greek 15x and 30x sets post VQSR}
+  \label{fig:r2}
+  \end{figure}
+
+  {Figure \ref{fig:r2} shows that where variants were captured in both sets, there was an $R^2$ correlation of 0.99 between the genotypes. INDELs were less promising, with a greater difference in the sites captured between the two sets and an $R^2$ correlation of 0.90 for sites present in both.}
 
   \section{Discussion}
+
+  {Our results have shown that sequencing at 15x coverage does not massively reduce the number of variants discovered. This means that we can divert our resources and delivers an increase in power through increased sample size without compromising quality.}
+
+  {We also found that the annotations used by VQSR require further development before they can be relied upon to accurately classify INDELs. Finally given observed PCR issues, PCR-free methods need to become the norm.}
 
   \section{Acknowledgements}
   With thanks to Tommy Carstensen for help in locating the machine algorithm for bcftools
